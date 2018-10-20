@@ -4,7 +4,7 @@
  |                                                                          |
  |         , __                 , __                                        |
  |        /|/  \               /|/  \                                       |
- |         | __/ _   ,_         | __/ _   ,_                                | 
+ |         | __/ _   ,_         | __/ _   ,_                                |
  |         |   \|/  /  |  |   | |   \|/  /  |  |   |                        |
  |         |(__/|__/   |_/ \_/|/|(__/|__/   |_/ \_/|/                       |
  |                           /|                   /|                        |
@@ -1151,8 +1151,8 @@ namespace G2lib {
                            int_type        n ) {
     x.clear(); x.reserve( unsigned(n) );
     y.clear(); y.reserve( unsigned(n) );
-    std::copy_n( xvec, n, std::back_inserter(x) );
-    std::copy_n( yvec, n, std::back_inserter(y) );
+    std::copy( xvec, xvec+n, std::back_inserter(x) );
+    std::copy( yvec, yvec+n, std::back_inserter(y) );
     npts = n;
     unsigned n1 = unsigned(n-1);
     k    . resize(n1);
@@ -1603,8 +1603,8 @@ namespace G2lib {
 
   // ---------------------------------------------------------------------------
 
-  std::ostream &
-  operator << ( std::ostream & stream, ClothoidSplineG2 const & c ) {
+  ostream_type &
+  operator << ( ostream_type & stream, ClothoidSplineG2 const & c ) {
     stream
       <<   "npts   = " << c.npts
       << "\ntarget = " << int(c.tt)

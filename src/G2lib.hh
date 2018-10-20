@@ -26,6 +26,7 @@
 
 #include <iostream>
 #include <cmath>
+#include <cfloat>
 #include <sstream>
 #include <stdexcept>
 #include <limits>
@@ -91,6 +92,8 @@
 //! Clothoid computations routine
 namespace G2lib {
 
+  typedef std::basic_ostream<char> ostream_type;
+
   typedef double real_type;
   typedef int    int_type;
 
@@ -103,6 +106,31 @@ namespace G2lib {
   extern real_type const m_2pi;       // 2*pi
   extern real_type const m_1_pi;      // 1/pi
   extern real_type const m_1_sqrt_pi; // 1/sqrt(pi)
+
+  static
+  inline
+  bool
+  isZero( real_type x )
+  { return FP_ZERO == std::fpclassify(x); }
+
+  static
+  inline
+  bool
+  isInfinite( real_type x )
+  { return FP_INFINITE == std::fpclassify(x); }
+
+  static
+  inline
+  bool
+  isNaN( real_type x )
+  { return FP_NAN == std::fpclassify(x); }
+
+  static
+  inline
+  bool
+  isRegular( real_type x )
+  { return !( FP_INFINITE == std::fpclassify(x) ||
+              FP_NAN      == std::fpclassify(x) ); }
 
   /*
   // sin(x)/x
