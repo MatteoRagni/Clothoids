@@ -1,3 +1,6 @@
+#ifndef LINESEGMENT_WRAP_HH
+#define LINESEGMENT_WRAP_HH
+
 #include <boost/python.hpp>
 #include <exception>
 #include <string>
@@ -6,23 +9,13 @@
 using namespace boost::python;
 using namespace G2lib;
 
-struct G2libArgumentError : public std::exception {
-  std::string err;
-  G2libArgumentError(std::string err_) : err(err_) {}
-  ~G2libArgumentError() throw () {};
-  const char * what() const throw () { return err.c_str(); }
-};
-std::string G2libErrorStrings[] = {
-  "Input list len must be 2"
-};
-void pyLineSegment_error0(G2libArgumentError const& x) {
-    PyErr_SetString(PyExc_UserWarning, G2libErrorStrings[0].c_str());
-}
-
-class pyLineSegment : public G2lib::LineSegment {
+class pyLineSegment : public LineSegment {
  public:
   using LineSegment::LineSegment;
-  using LineSegment::translate;
+
+  pyLineSegment(list p1, list p2) {
+    build_2P_1(p1, p2);
+  }
 
   void copy(pyLineSegment const &c) { LineSegment::copy(c); }
 
@@ -37,16 +30,13 @@ class pyLineSegment : public G2lib::LineSegment {
                           extract< real_type >(_b[1]));
   }
 
-  list findST_0(real_type x, real_type y) {
+  tuple findST_0(real_type x, real_type y) {
     real_type s, t;
-    list result;
     LineSegment::findST(x, y, s, t);
-    result.append(s);
-    result.append(t);
-    return result;
+    return make_tuple(s, t);
   }
 
-  list findST_1(list p) {
+  tuple findST_1(list p) {
     if (len(p) != 2)
       throw G2libArgumentError(G2libErrorStrings[0]);
     return findST_0(extract<real_type>(p[0]), extract<real_type>(p[1]));
@@ -180,46 +170,4 @@ class pyLineSegment : public G2lib::LineSegment {
   } 
 };
 
-BOOST_PYTHON_MODULE(G2lib) {
-  register_exception_translator<G2libArgumentError>(pyLineSegment_error0);
-  class_< pyLineSegment >("LineSegment", init< real_type, real_type, real_type, real_type >())
-      .def(init< pyLineSegment const & >())
-      .def(init<>())
-      .def("copy", &pyLineSegment::copy)
-      .add_property("xBegin", &pyLineSegment::xBegin)
-      .add_property("yBegin", &pyLineSegment::yBegin)
-      .add_property("xEnd", &pyLineSegment::xEnd)
-      .add_property("yEnd", &pyLineSegment::yEnd)
-      .add_property("theta", &pyLineSegment::theta)
-      .add_property("sinTheta", &pyLineSegment::sinTheta)
-      .add_property("cosTheta", &pyLineSegment::cosTheta)
-      .add_property("length", &pyLineSegment::length)
-      .def("build", &pyLineSegment::build)
-      .def("build_2P", &pyLineSegment::build_2P_0)
-      .def("build_2P", &pyLineSegment::build_2P_1)
-      .def("X", &pyLineSegment::X)
-      .def("Y", &pyLineSegment::Y)
-      .def("eval", &pyLineSegment::eval_0)
-      .def("eval_D", &pyLineSegment::eval_D_0)
-      .def("eval_DD", &pyLineSegment::eval_DD_0)
-      .def("eval_DDD", &pyLineSegment::eval_DDD_0)
-      .def("eval", &pyLineSegment::eval_1)
-      .def("eval_D", &pyLineSegment::eval_D_1)
-      .def("eval_DD", &pyLineSegment::eval_DD_1)
-      .def("eval_DDD", &pyLineSegment::eval_DDD_1)
-      .def("trim", &pyLineSegment::trim)
-      .def("translate", &pyLineSegment::translate)
-      .def("translate", &pyLineSegment::translate_0)
-      .def("rotate", &pyLineSegment::rotate)
-      .def("rotate", &pyLineSegment::rotate_0)
-      .def("reverse", &pyLineSegment::reverse)
-      .def("changeOrigin", &pyLineSegment::changeOrigin)
-      .def("closestPoint", &pyLineSegment::closestPoint_0)
-      .def("closestPoint", &pyLineSegment::closestPoint_1)
-      .def("distance", &pyLineSegment::distance_0)
-      .def("distance", &pyLineSegment::distance_1)
-      .def("findST", &pyLineSegment::findST_0)
-      .def("findST", &pyLineSegment::findST_1)
-      .def("p1p2", &pyLineSegment::p1p2_0)
-      .def("intersect", &pyLineSegment::intersect);
-};
+#endif /* LINESEGMENT_WRAP_HH */

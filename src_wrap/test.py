@@ -1,6 +1,7 @@
 import unittest
 from math import pi as M_PI
 from G2lib import LineSegment as LS
+from G2lib import CircleArc as CA
 
 class TestLineSegment(unittest.TestCase):
   def setUp(self):
@@ -100,6 +101,27 @@ class TestLineSegment(unittest.TestCase):
     self.assertEqual(self.l2.p1p2(), ([1, 0], [-1, 0]))
 
     
+class TestCircleArc(unittest.TestCase):
+  def setUp(self):
+    self.c1 = CA()
+      
+  def test_constructor(self):
+    self.assertEqual(type(self.c1), CA)
+
+  def test_build(self):
+    self.assertEqual(True, self.c1.build_3P([0, 0], [1, 1], [2, 0]))
+    self.assertEqual(self.c1.xBegin, 0)
+    self.assertEqual(self.c1.yBegin, 0)
+    self.assertEqual(self.c1.xEnd, 2)
+    self.assertEqual(self.c1.yEnd, 0)
+    self.assertEqual(self.c1.deltaTheta, M_PI)
+
+  def test_eval(self):
+    self.assertEqual(True, self.c1.build_3P([0, 0], [1, 1], [2, 0]))
+    self.assertEqual(self.c1.eval(self.c1.length), [2, 0])
+    self.assertEqual(self.c1.findST([2, 0]), (self.c1.length, 0))
+
+    self.assertEqual(self.c1.theta(self.c1.length/2), 0)
 
 
 

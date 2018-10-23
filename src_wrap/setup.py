@@ -4,7 +4,7 @@ from distutils.extension import Extension
 G2lib = Extension(
     'G2lib',
     sources=[
-      'LineSegmentWrap.cc'
+      'G2libWrap.cc'
     ],
     include_dirs=['../lib/include'],
     extra_objects=['../lib/libClothoids.a'],
